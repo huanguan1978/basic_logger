@@ -1,6 +1,6 @@
 name: basic_logger
 description: basic logger for dart.
-version: 0.0.1
+version: 0.0.2
 repository: https://github.com/huanguan1978/basic_logger
 
 environment:
