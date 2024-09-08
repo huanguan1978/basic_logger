@@ -46,20 +46,32 @@ final class BasicLogger {
     _logger.level = value;
   }
 
+  void _log(
+    Level logLevel,
+    Object? message, [
+    Object? error,
+    StackTrace? stackTrace,
+  ]) =>
+      _logger.log(logLevel, message, error, stackTrace);
+
+  /// log message at the specified level
+  void logrec(Object? message, [Object? error, StackTrace? stackTrace]) =>
+      _log(_logger.level, message, error, stackTrace);
+
   void debug(Object? message, [Object? error, StackTrace? stackTrace]) =>
-      _logger.log(Level.FINE, message, error, stackTrace);
+      _log(Level.FINE, message, error, stackTrace);
 
   void info(Object? message, [Object? error, StackTrace? stackTrace]) =>
-      _logger.log(Level.INFO, message, error, stackTrace);
+      _log(Level.INFO, message, error, stackTrace);
 
   void warning(Object? message, [Object? error, StackTrace? stackTrace]) =>
-      _logger.log(Level.WARNING, message, error, stackTrace);
+      _log(Level.WARNING, message, error, stackTrace);
 
   void error(Object? message, [Object? error, StackTrace? stackTrace]) =>
-      _logger.log(Level.SEVERE, message, error, stackTrace);
+      _log(Level.SEVERE, message, error, stackTrace);
 
   void critical(Object? message, [Object? error, StackTrace? stackTrace]) =>
-      _logger.log(Level.SHOUT, message, error, stackTrace);
+      _log(Level.SHOUT, message, error, stackTrace);
 }
 
 abstract base class OutputLogger {
