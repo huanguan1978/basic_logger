@@ -11,7 +11,7 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages). 
 -->
 
-BasicLogger is a fast, simple and lightweight log output for Dart.
+BasicLogger is a fast, extensible, simple and lightweight logging tool for Dart and Flutter..
 
 ## Features
 
@@ -21,6 +21,10 @@ It is distributed as a single file module and has no dependencies other than the
 
 ```shell
   dart pub add basic_logger
+```
+
+```shell
+  flutter pub add basic_logger
 ```
 
 ## Usage
@@ -36,7 +40,7 @@ It is distributed as a single file module and has no dependencies other than the
   basicLogger.attachLogger(ConsoleOutputLogger(parentName: basicLogger.name));
 
   // attach file log, bufferSize default 10
-  basicLogger.attachLogger(FileOutputLogger(parentName: basicLogger.name));
+  // basicLogger.attachLogger(FileOutputLogger(parentName: basicLogger.name));
 
   // output to all attach instance
   basicLogger.info('hello world');
@@ -49,6 +53,15 @@ It is distributed as a single file module and has no dependencies other than the
 ```
 
 ## Additional information
+
+- FileOutputLogger, file-based logging for Android, iOS, Linux, macOS, and Windows platforms.
+
+```shell
+dart pub add basic_logger_file
+```
+```shell
+flutter pub add basic_logger_file
+```
 
 - FileOutputLogger, specify output file path
 

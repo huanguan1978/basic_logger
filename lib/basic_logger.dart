@@ -3,10 +3,7 @@
 /// More dartdocs go here.
 library basic_logger;
 
-import 'dart:async';
-import 'dart:io';
 import 'dart:developer' as developer;
-import 'package:path/path.dart' as path;
 import 'package:logging/logging.dart';
 
 part 'src/basic_logger_base.dart';
