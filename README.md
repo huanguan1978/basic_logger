@@ -32,15 +32,18 @@ It is distributed as a single file module and has no dependencies other than the
 ```dart
   Logger.root.level = Level.ALL;
   final basicLogger = BasicLogger('main');
-  // attach developer log
 
+  // attach developer log
   basicLogger.attachLogger(DevOutputLogger(parentName: basicLogger.name));
 
-  // attach console log
-  basicLogger.attachLogger(ConsoleOutputLogger(parentName: basicLogger.name));
-
-  // attach file log, bufferSize default 10
-  // basicLogger.attachLogger(FileOutputLogger(parentName: basicLogger.name));
+  // attach output log, 
+  // selfname, default console
+  // selfonly, when true, filter by selfname. Otherwise, output all.
+  final consoleLogger = basicLogger.attachLogger(OutputLogger(
+    basicLogger.name,
+    // selfname: 'console',
+    // selfonly: true,
+  ));
 
   // output to all attach instance
   basicLogger.info('hello world');
@@ -49,7 +52,7 @@ It is distributed as a single file module and has no dependencies other than the
   basicLogger.output();
 
   // output
-  // 2024-08-16 14:48:49.342267: [INFO] [main] hello world
+  // 2024-10-15 02:52:11.405809 [INFO] main: hello world
 ```
 
 ## Flutter Usage
@@ -59,7 +62,7 @@ It is distributed as a single file module and has no dependencies other than the
 
   // attach observer, console log use debugPrint
   basicLogger.attachLogger(
-    ConsoleOutputLogger(parentName: basicLogger.name)..record = debugPrint,
+    OutputLogger(basicLogger.name)..record = debugPrint,
     );
 
   basicLogger.info('hello world');

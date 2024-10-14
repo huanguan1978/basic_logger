@@ -1,3 +1,7 @@
+## 0.1.1
+- The logger name is set to selfname.
+- selfonly, when true, filter by selfname. Otherwise, output all.
+
 ## 0.1.0
 - Refactored with Template Method pattern,
 - allowing customization of record and format methods.

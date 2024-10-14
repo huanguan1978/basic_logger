@@ -26,9 +26,16 @@ final class BasicLogger {
 
   /// Detach an observer
   Logger detachLogger(OutputLogger listenLogger) {
+    for (var element in _listenLogs) {
+      if (element.name == listenLogger.name) {
+        _listenLogs.remove(element);
+      }
+    }
+    /*
     if (_listenLogs.contains(listenLogger)) {
       _listenLogs.remove(listenLogger);
     }
+    */
     return Logger.detached(listenLogger.name);
   }
 
@@ -88,15 +95,24 @@ final class BasicLogger {
 /// Template Method Pattern, OutputLogger
 base class OutputLogger {
   late final String _logName;
-  final String _selfname;
+  late final String _selfname;
+  late final bool _selfonly;
+
   final String _parentName;
 
   void Function(String) record = print;
   String Function(LogRecord) format = (logRec) => '${logRec.time} $logRec';
 
-  OutputLogger(this._selfname, this._parentName) {
+  OutputLogger(
+    this._parentName, {
+    String selfname = 'console',
+    bool selfonly = false,
+  }) {
+    _selfname = selfname;
+    _selfonly = selfonly;
     _logName = '$_parentName.$_selfname';
-    Logger(_logName).onRecord.listen((LogRecord record) {
+    Logger(_parentName).onRecord.listen((LogRecord record) {
+      if (_selfonly && (_logName != record.loggerName)) return;
       output(record);
     });
   }
@@ -107,24 +123,13 @@ base class OutputLogger {
       logRec == null ? null : record(format(logRec));
 }
 
-/// output to console, use print
-final class ConsoleOutputLogger extends OutputLogger {
-  ConsoleOutputLogger({
-    required String parentName,
-    String name = 'console',
-  }) : super(name, parentName);
-
-  @override
-  void output([LogRecord? logRec]) =>
-      logRec == null ? null : record(format(logRec));
-}
-
 /// output to log, use developer.log
 final class DevOutputLogger extends OutputLogger {
   DevOutputLogger({
     required String parentName,
-    String name = 'developer',
-  }) : super(name, parentName);
+    String selfname = 'developer',
+    bool selfonly = false,
+  }) : super(parentName, selfname: selfname, selfonly: selfonly);
 
   @override
   void output([LogRecord? logRec]) {

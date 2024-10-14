@@ -1,6 +1,6 @@
 name: basic_logger
 description: BasicLogger is a fast, extensible, simple and lightweight logging tool for Dart and Flutter.
-version: 0.1.0
+version: 0.1.1
 repository: https://github.com/huanguan1978/basic_logger
 
 environment:
