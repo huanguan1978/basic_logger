@@ -8,7 +8,7 @@ void main() {
   final basicLogger = BasicLogger('main');
 
   // attach developer log
-  basicLogger.attachLogger(DevOutputLogger(parentName: basicLogger.name));
+  /// basicLogger.attachLogger(DevOutputLogger(parentName: basicLogger.name));
 
   // attach console log
   final consoleLogger = basicLogger
@@ -26,4 +26,7 @@ void main() {
 
   // show all attach OutputLogger instance name
   print(basicLogger.listenNames);
+
+  // basicLogger children
+  print(basicLogger.logger.children);
 }

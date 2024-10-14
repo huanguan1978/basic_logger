@@ -32,8 +32,8 @@ It is distributed as a single file module and has no dependencies other than the
 ```dart
   Logger.root.level = Level.ALL;
   final basicLogger = BasicLogger('main');
-
   // attach developer log
+
   basicLogger.attachLogger(DevOutputLogger(parentName: basicLogger.name));
 
   // attach console log
@@ -50,6 +50,20 @@ It is distributed as a single file module and has no dependencies other than the
 
   // output
   // 2024-08-16 14:48:49.342267: [INFO] [main] hello world
+```
+
+## Flutter Usage
+```dart
+  Logger.root.level = Level.ALL;
+  final basicLogger = BasicLogger('main');
+
+  // attach observer, console log use debugPrint
+  basicLogger.attachLogger(
+    ConsoleOutputLogger(parentName: basicLogger.name)..record = debugPrint,
+    );
+
+  basicLogger.info('hello world');
+)    
 ```
 
 ## Additional information

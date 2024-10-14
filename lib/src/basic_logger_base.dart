@@ -1,5 +1,6 @@
 part of '../basic_logger.dart';
 
+/// Observer Pattern, BasicLogger
 final class BasicLogger {
   static final BasicLogger _instance = BasicLogger._();
   static late final Logger _logger;
@@ -17,11 +18,13 @@ final class BasicLogger {
 
   Logger get logger => _logger;
 
+  /// Attach an observer
   Logger attachLogger(OutputLogger listenLogger) {
     _listenLogs.add(listenLogger);
     return Logger(listenLogger.name);
   }
 
+  /// Detach an observer
   Logger detachLogger(OutputLogger listenLogger) {
     if (_listenLogs.contains(listenLogger)) {
       _listenLogs.remove(listenLogger);
@@ -29,21 +32,29 @@ final class BasicLogger {
     return Logger.detached(listenLogger.name);
   }
 
+  /// all logger instance
   Iterable<Logger> get attachedLoggers => Logger.attachedLoggers;
+
+  /// all logger name
   String get attachedNames =>
       attachedLoggers.map((e) => ('${e.parent?.name}.${e.name}')).toString();
 
+  /// all observer instance
   Iterable<OutputLogger> get listenLoggers => _listenLogs;
+
+  /// all observer name
   String get listenNames => listenLoggers.map((e) => e.name).toString();
 
+  /// Output and flush the buffer
   void output() {
     for (var listenLog in _listenLogs) {
-      listenLog.output();
+      listenLog.output(null);
     }
   }
 
   void level(Level? value) {
-    _logger.level = value;
+    Logger.root.level = value ?? Level.ALL;
+    // _logger.level = value;
   }
 
   void _log(
@@ -74,56 +85,59 @@ final class BasicLogger {
       _log(Level.SHOUT, message, error, stackTrace);
 }
 
-/// supper class, OutputLogger
-abstract base class OutputLogger {
-  final String _name;
+/// Template Method Pattern, OutputLogger
+base class OutputLogger {
+  late final String _logName;
+  final String _selfname;
   final String _parentName;
 
-  OutputLogger(this._parentName, this._name);
+  void Function(String) record = print;
+  String Function(LogRecord) format = (logRec) => '${logRec.time} $logRec';
 
-  String get name => '$_parentName.$_name';
+  OutputLogger(this._selfname, this._parentName) {
+    _logName = '$_parentName.$_selfname';
+    Logger(_logName).onRecord.listen((LogRecord record) {
+      output(record);
+    });
+  }
 
-  void output();
+  String get name => _logName;
+
+  void output([LogRecord? logRec]) =>
+      logRec == null ? null : record(format(logRec));
 }
 
 /// output to console, use print
 final class ConsoleOutputLogger extends OutputLogger {
   ConsoleOutputLogger({
     required String parentName,
-    String name = 'basicConsoleLogger',
-  }) : super(parentName, name) {
-    name = '$parentName.$name';
-    Logger(name).onRecord.listen((LogRecord record) {
-      print(
-          '${record.time}: [${record.level}] [${record.loggerName}] ${record.message}');
-    });
-  }
+    String name = 'console',
+  }) : super(name, parentName);
 
   @override
-  void output() {}
+  void output([LogRecord? logRec]) =>
+      logRec == null ? null : record(format(logRec));
 }
 
 /// output to log, use developer.log
 final class DevOutputLogger extends OutputLogger {
   DevOutputLogger({
     required String parentName,
-    String name = 'basieDevLogger',
-  }) : super(parentName, name) {
-    name = '$parentName.$name';
-    Logger(name).onRecord.listen((LogRecord record) {
-      developer.log(
-        record.message,
-        time: record.time,
-        sequenceNumber: record.sequenceNumber,
-        level: record.level.value,
-        name: record.loggerName,
-        zone: record.zone,
-        error: record.error,
-        stackTrace: record.stackTrace,
-      );
-    });
-  }
+    String name = 'developer',
+  }) : super(name, parentName);
 
   @override
-  void output() {}
+  void output([LogRecord? logRec]) {
+    if (logRec == null) return;
+    developer.log(
+      logRec.message,
+      time: logRec.time,
+      sequenceNumber: logRec.sequenceNumber,
+      level: logRec.level.value,
+      name: logRec.loggerName,
+      zone: logRec.zone,
+      error: logRec.error,
+      stackTrace: logRec.stackTrace,
+    );
+  }
 }
