@@ -112,8 +112,11 @@ base class OutputLogger {
     _selfonly = selfonly;
     _logName = '$_parentName.$_selfname';
     Logger(_parentName).onRecord.listen((LogRecord record) {
-      if (_selfonly && (_logName != record.loggerName)) return;
-      output(record);
+      if (_selfonly) {
+        if (_logName == record.loggerName) output(record);
+      } else {
+        if (_parentName == record.loggerName) output(record);
+      }
     });
   }
 
@@ -125,11 +128,25 @@ base class OutputLogger {
 
 /// output to log, use developer.log
 final class DevOutputLogger extends OutputLogger {
-  DevOutputLogger({
-    required String parentName,
+  late final String __logName;
+
+  DevOutputLogger(
+    String parentName, {
     String selfname = 'developer',
     bool selfonly = false,
-  }) : super(parentName, selfname: selfname, selfonly: selfonly);
+  }) : super(parentName, selfname: selfname, selfonly: selfonly) {
+    __logName = '$_parentName.$_selfname';
+    Logger(parentName).onRecord.listen((LogRecord record) {
+      if (selfonly) {
+        if (__logName == record.loggerName) output(record);
+      } else {
+        if (parentName == record.loggerName) output(record);
+      }
+    });
+  }
+
+  @override
+  String get name => __logName;
 
   @override
   void output([LogRecord? logRec]) {

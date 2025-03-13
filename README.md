@@ -34,11 +34,11 @@ It is distributed as a single file module and has no dependencies other than the
   final basicLogger = BasicLogger('main');
 
   // attach developer log
-  basicLogger.attachLogger(DevOutputLogger(parentName: basicLogger.name));
+  basicLogger.attachLogger(DevOutputLogger(basicLogger.name));
 
   // attach output log, 
   // selfname, default console
-  // selfonly, when true, filter by selfname. Otherwise, output all.
+  // selfonly, if true filter by selfname, else parentName match are output.
   final consoleLogger = basicLogger.attachLogger(OutputLogger(
     basicLogger.name,
     // selfname: 'console',
@@ -84,7 +84,7 @@ flutter pub add basic_logger_file
 
 ```dart
   basicLogger.attachLogger(FileOutputLogger(
-    parentName: basicLogger.name,
+    basicLogger.name,
     dir: './logs/',
   ));
 ```
@@ -94,7 +94,7 @@ flutter pub add basic_logger_file
 ```dart
   // buffering allows you to write files multiple times instead of writing files once
   basicLogger.attachLogger(FileOutputLogger(
-    parentName: basicLogger.name,
+    basicLogger.name,
     bufferSize: 100,
   ));
 

@@ -8,13 +8,13 @@ void main() {
   final basicLogger = BasicLogger('main');
 
   // attach developer log
-  basicLogger.attachLogger(DevOutputLogger(parentName: basicLogger.name));
+  basicLogger.attachLogger(DevOutputLogger(basicLogger.name));
 
   // attach output log, alias console
-  // selfonly, when true, filter by selfname. Otherwise, output all.
+  // selfonly, if true filter by selfname, else parentName match are output.
   final consoleLogger = basicLogger.attachLogger(OutputLogger(
     basicLogger.name,
-    selfname: 'console',
+    // selfname: 'console',
     // selfonly: true,
   ));
 

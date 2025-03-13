@@ -1,3 +1,7 @@
+## 0.2.0
+- BREAKING: DevOutputLogger, uses positional arguments, passing `parentName` in the same way as its parent.
+- fix:  If `selfonly` is false, all logs with a `parentName` match are output.
+
 ## 0.1.1
 - The logger name is set to selfname.
 - selfonly, when true, filter by selfname. Otherwise, output all.
