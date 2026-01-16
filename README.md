@@ -17,17 +17,11 @@ BasicLogger is a fast, extensible, simple and lightweight logging tool for Dart 
 
 It is distributed as a single file module and has no dependencies other than the Dart Standard Library.
 
-## Getting started
+## Architecture Patterns
 
-```shell
-  dart pub add basic_logger
-```
-
-```shell
-  flutter pub add basic_logger
-```
-
-## Usage
+### Pattern 1: Multi-sink Fan-out
+**Broadcast a single log event to multiple outputs simultaneously.**
+This pattern implements a **one-to-many** distribution, allowing you to decouple log generation from log persistence. Common for concurrent real-time terminal monitoring and local file archiving.
 
 ```dart
   Logger.root.level = Level.ALL;
@@ -55,18 +49,34 @@ It is distributed as a single file module and has no dependencies other than the
   // 2024-10-15 02:52:11.405809 [INFO] main: hello world
 ```
 
-## Flutter Usage
+
+### Pattern 2: Scoped Log Routing
+**Isolate logs by functional domains or business categories.**
+By registering independent loggers for different modules (e.g., `Auth`, `Database`, `Network`), you achieve **Separation of Concerns (SoC)**. This allows for granular control over filtering levels and storage policies for each specific scope.
+
 ```dart
   Logger.root.level = Level.ALL;
+
   final basicLogger = BasicLogger('main');
 
-  // attach observer, console log use debugPrint
-  basicLogger.attachLogger(
-    OutputLogger(basicLogger.name)..record = debugPrint,
-    );
+  // attach output log, alias stdout, filter by selfname
+  final stdoutOutputLogger =
+      OutputLogger(basicLogger.name, selfname: 'stdout', selfonly: true);
+  final stdoutLogger = basicLogger.attachLogger(stdoutOutputLogger);
 
-  basicLogger.info('hello world');
-)    
+  // attach output log, alias stderr, filter by selfname
+  final stderrOutputLogger =
+      OutputLogger(basicLogger.name, selfname: 'stderr', selfonly: true);
+  final stderrLogger = basicLogger.attachLogger(stderrOutputLogger);
+
+  stdoutLogger.info('info a11'); 
+  stderrLogger.info('error 1234');
+  stdoutLogger.info('info a22'); 
+
+  // output
+  // 2026-01-16 10:41:18.957774 [INFO] main.stdout: info a11
+  // 2026-01-16 10:41:18.967899 [INFO] main.stderr: error 1234
+  // 2026-01-16 10:41:18.967971 [INFO] main.stdout: info a22
 ```
 
 ## Additional information
@@ -75,9 +85,6 @@ It is distributed as a single file module and has no dependencies other than the
 
 ```shell
 dart pub add basic_logger_file
-```
-```shell
-flutter pub add basic_logger_file
 ```
 
 - FileOutputLogger, specify output file path
@@ -102,4 +109,12 @@ flutter pub add basic_logger_file
   basicLogger.output();
 ```
 
+- FileOutputLogger, specify output categorization
 
+```dart
+  // allow custom log extensions via `ext` parameter for log categorization.
+  basicLogger.attachLogger(FileOutputLogger(
+    basicLogger.name,
+    ext: '_sql.log',
+  ));
+```

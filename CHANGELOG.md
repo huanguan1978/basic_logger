@@ -1,3 +1,7 @@
+## 0.2.1
+- docs: add multi-sink and log routing patterns to README.
+- fix: detachLogger, concurrent modification during iteration.
+
 ## 0.2.0
 - BREAKING: DevOutputLogger, uses positional arguments, passing `parentName` in the same way as its parent.
 - fix:  If `selfonly` is false, all logs with a `parentName` match are output.

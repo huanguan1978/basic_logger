@@ -26,16 +26,7 @@ final class BasicLogger {
 
   /// Detach an observer
   Logger detachLogger(OutputLogger listenLogger) {
-    for (var element in _listenLogs) {
-      if (element.name == listenLogger.name) {
-        _listenLogs.remove(element);
-      }
-    }
-    /*
-    if (_listenLogs.contains(listenLogger)) {
-      _listenLogs.remove(listenLogger);
-    }
-    */
+    _listenLogs.removeWhere((e) => e.name == listenLogger.name);
     return Logger.detached(listenLogger.name);
   }
 

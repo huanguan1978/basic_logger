@@ -1,7 +1,8 @@
-/// Support for doing something awesome.
+/// BasicLogger is a fast, extensible, simple and lightweight logging tool for Dart and Flutter.
 ///
-/// More dartdocs go here.
-library basic_logger;
+/// A minimalist, **zero-dependency** logging utility for Dart. Engineered with only the Dart standard library to ensure a **near-zero footprint** and maximum compatibility.
+
+library;
 
 import 'dart:developer' as developer;
 import 'package:logging/logging.dart';
