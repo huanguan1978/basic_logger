@@ -1,3 +1,6 @@
+## 0.2.2
+- perf: use conditional constructor termination to share a unified data type while bypassing redundant base-class logic during inheritance.
+
 ## 0.2.1
 - docs: add multi-sink and log routing patterns to README.
 - fix: detachLogger, concurrent modification during iteration.

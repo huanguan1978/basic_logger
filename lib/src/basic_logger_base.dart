@@ -98,10 +98,15 @@ base class OutputLogger {
     this._parentName, {
     String selfname = 'console',
     bool selfonly = false,
+    bool listening = true,
   }) {
     _selfname = selfname;
     _selfonly = selfonly;
     _logName = '$_parentName.$_selfname';
+
+    // leverage conditional constructor termination to toggle a class
+    // between a functional logic provider and a pure data type.
+    if (!listening) return;
     Logger(_parentName).onRecord.listen((LogRecord record) {
       if (_selfonly) {
         if (_logName == record.loggerName) output(record);
@@ -125,9 +130,9 @@ final class DevOutputLogger extends OutputLogger {
     String parentName, {
     String selfname = 'developer',
     bool selfonly = false,
-  }) : super(parentName, selfname: selfname, selfonly: selfonly) {
+  }) : super(parentName, selfname: selfname, listening: false) {
     __logName = '$_parentName.$_selfname';
-    Logger(parentName).onRecord.listen((LogRecord record) {
+    Logger(_parentName).onRecord.listen((LogRecord record) {
       if (selfonly) {
         if (__logName == record.loggerName) output(record);
       } else {
