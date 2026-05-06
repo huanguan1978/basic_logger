@@ -1,3 +1,14 @@
+## 0.2.3
+
+### Added
+- **Documentation**: Added an "Advanced Usage" section to the README.
+  - Provided a level mapping reference between Dart `logging` and other common languages.
+  - Demonstrated how to access the native `Logger` instance for full API flexibility.
+  - Included examples for integrating Flutter's global error handlers (`FlutterError.onError`, `PlatformDispatcher`) with `BasicLogger`.
+
+### Improved
+- Clarified the relationship between `BasicLogger` and the standard `package:logging` ecosystem.
+
 ## 0.2.2
 - perf: use conditional constructor termination to share a unified data type while bypassing redundant base-class logic during inheritance.
 

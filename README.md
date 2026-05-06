@@ -79,6 +79,69 @@ By registering independent loggers for different modules (e.g., `Auth`, `Databas
   // 2026-01-16 10:41:18.967971 [INFO] main.stdout: info a22
 ```
 
+## Advanced Usage: Seamless Integration with Dart Standard Library
+
+`BasicLogger` is built upon the official Dart `logging` package. For advanced users, you can access the native `Logger` instance directly to enjoy the full power of the standard library while maintaining the simplicity of `BasicLogger`.
+
+### 1. Level Reference Table
+To assist with migration from other languages (e.g., Python/Java), here is the mapping of Dart's levels:
+
+| Dart `Level` | Recommended Use Case |
+| :--- | :--- |
+| **`FINEST` / `FINER`** | High-frequency execution traces |
+| **`FINE`** | Standard Debug (equivalent to Python `DEBUG`) |
+| **`CONFIG`** | Application configuration/setup info |
+| **`INFO`** | General operational milestones |
+| **`WARNING`** | Non-fatal warnings |
+| **`SEVERE`** | Error conditions (equivalent to Python `ERROR`) |
+| **`SHOUT`** | Fatal/Critical errors (equivalent to Python `CRITICAL`) |
+
+### 2. Accessing the Native `Logger` Instance
+You can access the underlying `Logger` object via the `basicLogger.logger` property. This allows you to use the full `package:logging` API whenever needed:
+
+```dart
+// Ensure you have imported: import 'package:logging/logging.dart';
+final basicLogger = BasicLogger('main');
+
+// Get the native Logger instance
+final logger = basicLogger.logger; 
+
+// Use native-level methods
+logger.fine('Fine-grained debug information');
+logger.shout('Critical alert before a crash');
+```
+
+### 3. Flutter Global Error Handling & Custom Output
+By leveraging the `record` and `format` hooks of `OutputLogger`, you can customize log output (e.g., using Flutter's `debugPrint`) and unify global exception handling into your logging pipeline:
+
+```dart
+void main() {
+  Logger.root.level = Level.ALL;
+  final basicLogger = BasicLogger('main');
+  
+  // Customize output format and redirect to Flutter's debugPrint
+  basicLogger.attachLogger(
+    OutputLogger(basicLogger.name)
+      ..record = debugPrint
+      ..format = (logRec) => logRec.toString(),
+  );
+
+  // Get the native Logger instance
+  final logger = basicLogger.logger; 
+
+  // Integrate Global Exception Handling
+  FlutterError.onError = (details) => 
+    logger.severe('FlutterError', details.exception, details.stack);
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    logger.severe('UnhandledError', error, stack);
+    return true;
+  };
+
+  // runApp(const MyApp());
+}
+```
+
 ## Additional information
 
 - FileOutputLogger, file-based logging for Android, iOS, Linux, macOS, and Windows platforms.
