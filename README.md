@@ -11,7 +11,7 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages). 
 -->
 
-BasicLogger is a fast, extensible, simple and lightweight logging tool for Dart and Flutter..
+BasicLogger is a fast, extensible, simple and lightweight logging tool for Dart and Flutter.
 
 ## Features
 
@@ -142,6 +142,69 @@ void main() {
 }
 ```
 
+### 4. Capturing Named Third-Party Loggers (Advanced)
+
+As shown above, BasicLogger processes records emitted by the standard Logger API from `package:logging`.
+That means if a third-party package uses a named Logger (for example, `GoogleAI.HTTP`), BasicLogger can capture those records and route them through your existing pipeline.
+
+The same named-logger capture pattern works across all OutputLogger-based sinks in this package:
+1. `OutputLogger`
+2. `DevOutputLogger`
+3. `FileOutputLogger`
+
+In most cases, no third-party source changes are required.
+Once you know the logger name, you can attach a sink and centralize:
+1. Collection
+2. Level filtering
+3. Fan-out (console, dev output, file)
+4. Troubleshooting and audit trails
+
+Prerequisites:
+1. Set an appropriate root level (for example, `Logger.root.level = Level.ALL`).
+2. Confirm the third-party package actually uses `package:logging`.
+3. Match the logger name exactly as defined by that package.
+
+High-value observability scenarios:
+1. HTTP SDKs: method, URL, status code, latency, retries, headers, response snippets.
+2. Database SDKs: connection lifecycle, query execution, slow queries, retries, stack traces.
+3. Message queue SDKs: publish, ack, redelivery, backlog growth, failure reasons.
+4. Other infrastructure clients: cache, object storage, auth, gateway, and related components.
+
+```dart
+void main() async {
+  // hierarchicalLoggingEnabled = true;
+  Logger.root.level = Level.ALL;
+  final basicLogger = BasicLogger('main');
+
+  // Example: googleai_dart uses a named Logger: GoogleAI.HTTP
+  basicLogger.attachLogger(
+    OutputLogger('GoogleAI.HTTP'),
+  );
+
+  final client = GoogleAIClient.fromEnvironment();
+  try {
+    final response = await client.models.generateContent(
+      model: 'gemini-3.5-flash',
+      request: GenerateContentRequest(
+        contents: [Content.text('Hello')],
+      ),
+    );
+
+    basicLogger.info(response.text);
+  } finally {
+    client.close();
+  }
+}
+```
+
+Sample output (truncated):
+
+```text
+2026-08-12 09:09:02.419060 [INFO] GoogleAI.HTTP: REQUEST ...
+2026-08-12 09:09:03.870647 [INFO] GoogleAI.HTTP: RESPONSE ... 200 (1473ms)
+2026-08-12 09:09:03.897237 [INFO] main: Hello! How can I help you today?
+```
+
 ## Additional information
 
 - FileOutputLogger, file-based logging for Android, iOS, Linux, macOS, and Windows platforms.
@@ -162,7 +225,7 @@ dart pub add basic_logger_file
 - FileOutputLogger, specify output buffer size
 
 ```dart
-  // buffering allows you to write files multiple times instead of writing files once
+  // bufferSize is measured in log lines: logs are buffered in memory and flushed to disk in one batch when the line count reaches bufferSize, reducing disk I/O.
   basicLogger.attachLogger(FileOutputLogger(
     basicLogger.name,
     bufferSize: 100,
@@ -181,3 +244,12 @@ dart pub add basic_logger_file
     ext: '_sql.log',
   ));
 ```
+
+## 💖 Support the Project
+If you find this tool helpful and would like to see it continue to improve and evolve, please consider showing your support.
+
+*   ⭐ **Star the Repo**: This is a great encouragement. Your stars help more people discover this tool and gain more recognition in the community.
+*   ☕ **Support the Developer (Global)**: Any contribution, however small, is a huge affirmation of my work. You can support via [GitHub Sponsors](https://github.com/sponsors/huanguan1978) or [Buy Me a Coffee](https://buymeacoffee.com/huanguan1978).
+*   🐼 **Support via Ifdian (Mainland China)**: Users in China can also show support via [Ifdian](https://ifdian.net/a/huanguan1978).
+
+*Thank you for your support, which is a vital boost that keeps me focused on the project's continuous iteration; because of you, more people can benefit from this tool much sooner.*

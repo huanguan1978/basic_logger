@@ -1,3 +1,11 @@
+## 0.2.4
+
+### Added
+- **Documentation**: Added an advanced README section on capturing named third-party `Logger` instances from `package:logging`.
+  - Clarified that all OutputLogger-based sinks (`OutputLogger`, `DevOutputLogger`, `FileOutputLogger`) support named-logger capture.
+  - Added observability-focused guidance for common third-party integrations (HTTP SDKs, Database SDKs, Message Queue SDKs, and other infrastructure clients).
+  - Included a practical example using a named logger (`GoogleAI.HTTP`) and sample output.
+
 ## 0.2.3
 
 ### Added
