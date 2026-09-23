@@ -1,3 +1,8 @@
+## 0.2.5
+
+### Improved
+- Use a super parameter for `selfname` to satisfy pub.dev static analysis; no functional changes.
+
 ## 0.2.4
 
 ### Added

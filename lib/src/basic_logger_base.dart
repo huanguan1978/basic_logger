@@ -128,9 +128,9 @@ final class DevOutputLogger extends OutputLogger {
 
   DevOutputLogger(
     String parentName, {
-    String selfname = 'developer',
     bool selfonly = false,
-  }) : super(parentName, selfname: selfname, listening: false) {
+    super.selfname = 'developer',
+  }) : super(parentName, listening: false) {
     __logName = '$_parentName.$_selfname';
     Logger(_parentName).onRecord.listen((LogRecord record) {
       if (selfonly) {
