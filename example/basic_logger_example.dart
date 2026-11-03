@@ -1,5 +1,5 @@
 import 'package:basic_logger/basic_logger.dart';
-import 'package:logging/logging.dart';
+import 'package:basic_logger/logging.dart';
 
 void main() {
   // hierarchicalLoggingEnabled = true;

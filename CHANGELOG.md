@@ -1,3 +1,18 @@
+## 0.2.6
+
+### Added
+- **Native Logging Levels**: Add `finest()`, `finer()`, `fine()`, `config()`, `severe()`, `shout()`, and generic `log()` / `isLoggable()` directly on `BasicLogger`.
+- **Sub-library Entrypoint**: Add `package:basic_logger/logging.dart` re-exporting `package:logging`. Downstream projects can access `Logger`, `Level`, and `LogRecord` without declaring a direct `logging` dependency in `pubspec.yaml`.
+
+### Migration / Usage
+```dart
+// Before: required `logging` declared in pubspec.yaml
+import 'package:logging/logging.dart';
+
+// Now: import directly via basic_logger sub-library
+import 'package:basic_logger/logging.dart';
+```
+
 ## 0.2.5
 
 ### Improved

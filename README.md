@@ -96,19 +96,25 @@ To assist with migration from other languages (e.g., Python/Java), here is the m
 | **`SEVERE`** | Error conditions (equivalent to Python `ERROR`) |
 | **`SHOUT`** | Fatal/Critical errors (equivalent to Python `CRITICAL`) |
 
-### 2. Accessing the Native `Logger` Instance
-You can access the underlying `Logger` object via the `basicLogger.logger` property. This allows you to use the full `package:logging` API whenever needed:
+### 2. Native Logging Levels & Sub-library Import
+`BasicLogger` directly exposes all native logging level methods (`finest`, `finer`, `fine`, `config`, `info`, `warning`, `severe`, `shout`, and generic `log`).
+To configure root log levels or access standard logging primitives, import the bundled sub-library without declaring `logging` in your own `pubspec.yaml`:
 
 ```dart
-// Ensure you have imported: import 'package:logging/logging.dart';
-final basicLogger = BasicLogger('main');
+import 'package:basic_logger/basic_logger.dart';
+import 'package:basic_logger/logging.dart';
 
-// Get the native Logger instance
-final logger = basicLogger.logger; 
+void main() {
+  Logger.root.level = Level.ALL;
+  final basicLogger = BasicLogger('main');
 
-// Use native-level methods
-logger.fine('Fine-grained debug information');
-logger.shout('Critical alert before a crash');
+  // Call native level methods directly on basicLogger
+  basicLogger.fine('Fine-grained debug information');
+  basicLogger.shout('Critical alert before a crash');
+
+  // Or access the underlying Logger instance if needed
+  final Logger nativeLogger = basicLogger.logger;
+}
 ```
 
 ### 3. Flutter Global Error Handling & Custom Output

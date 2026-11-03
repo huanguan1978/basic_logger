@@ -55,7 +55,8 @@ final class BasicLogger {
     // _logger.level = value;
   }
 
-  void _log(
+  /// Log message at the specified [logLevel].
+  void log(
     Level logLevel,
     Object? message, [
     Object? error,
@@ -63,24 +64,58 @@ final class BasicLogger {
   ]) =>
       _logger.log(logLevel, message, error, stackTrace);
 
-  /// log message at the specified level
+  /// Check whether messages at [value] level would be processed.
+  bool isLoggable(Level value) => _logger.isLoggable(value);
+
+  /// Log message at the logger's current level.
   void logrec(Object? message, [Object? error, StackTrace? stackTrace]) =>
-      _log(_logger.level, message, error, stackTrace);
+      log(_logger.level, message, error, stackTrace);
 
-  void debug(Object? message, [Object? error, StackTrace? stackTrace]) =>
-      _log(Level.FINE, message, error, stackTrace);
+  /// Log message at level [Level.FINEST].
+  void finest(Object? message, [Object? error, StackTrace? stackTrace]) =>
+      log(Level.FINEST, message, error, stackTrace);
 
+  /// Log message at level [Level.FINER].
+  void finer(Object? message, [Object? error, StackTrace? stackTrace]) =>
+      log(Level.FINER, message, error, stackTrace);
+
+  /// Log message at level [Level.FINE].
+  void fine(Object? message, [Object? error, StackTrace? stackTrace]) =>
+      log(Level.FINE, message, error, stackTrace);
+
+  /// Log message at level [Level.CONFIG].
+  void config(Object? message, [Object? error, StackTrace? stackTrace]) =>
+      log(Level.CONFIG, message, error, stackTrace);
+
+  /// Log message at level [Level.INFO].
   void info(Object? message, [Object? error, StackTrace? stackTrace]) =>
-      _log(Level.INFO, message, error, stackTrace);
+      log(Level.INFO, message, error, stackTrace);
 
+  /// Log message at level [Level.WARNING].
   void warning(Object? message, [Object? error, StackTrace? stackTrace]) =>
-      _log(Level.WARNING, message, error, stackTrace);
+      log(Level.WARNING, message, error, stackTrace);
 
+  /// Log message at level [Level.SEVERE].
+  void severe(Object? message, [Object? error, StackTrace? stackTrace]) =>
+      log(Level.SEVERE, message, error, stackTrace);
+
+  /// Log message at level [Level.SHOUT].
+  void shout(Object? message, [Object? error, StackTrace? stackTrace]) =>
+      log(Level.SHOUT, message, error, stackTrace);
+
+  // Convenient multi-language aliases:
+
+  /// Convenience alias for [fine] (equivalent to Python/Java `DEBUG`).
+  void debug(Object? message, [Object? error, StackTrace? stackTrace]) =>
+      fine(message, error, stackTrace);
+
+  /// Convenience alias for [severe] (equivalent to Python/Java `ERROR`).
   void error(Object? message, [Object? error, StackTrace? stackTrace]) =>
-      _log(Level.SEVERE, message, error, stackTrace);
+      severe(message, error, stackTrace);
 
+  /// Convenience alias for [shout] (equivalent to Python/Java `CRITICAL`).
   void critical(Object? message, [Object? error, StackTrace? stackTrace]) =>
-      _log(Level.SHOUT, message, error, stackTrace);
+      shout(message, error, stackTrace);
 }
 
 /// Template Method Pattern, OutputLogger
